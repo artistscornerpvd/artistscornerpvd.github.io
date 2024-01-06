@@ -98,18 +98,29 @@ const CategoryPage = () => {
   return (
     <div className="category-page-container">
       <h1>{categoryName}</h1>
+
       <div className="sort-dropdown">
-        <select
-          value={selectedSort}
-          onChange={(e) => handleSort(e.target.value)}
-        >
-          <option value="reset">Reset Sort</option>
-          <option value="lowToHigh">Low to High</option>
-          <option value="highToLow">High to Low</option>
-          <option value="mostRecent">Most Recent</option>
-          <option value="leastRecent">Least Recent</option>
-        </select>
-      </div>
+    <select
+      value={selectedSort}
+      onChange={(e) => handleSort(e.target.value)}
+      style={{
+        fontFamily: "Space Grotesk",
+        fontSize: "medium",
+        backgroundColor: selectedSort === "reset" ? "rgb(238, 238, 238)" : "rgb(223, 227, 255)",
+        borderRadius: "8px",
+        padding: "8px",
+        border: "0",
+        boxShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)",
+        transition: "all 0.3s ease",
+      }}
+    >
+      <option value="reset">Reset Sort</option>
+      <option value="lowToHigh">Low to High</option>
+      <option value="highToLow">High to Low</option>
+      <option value="mostRecent">Most Recent</option>
+      <option value="leastRecent">Least Recent</option>
+    </select>
+  </div>
       <div className="subcategory-items-container">
         <div data-testid="subcategory-tags" className="subcategory-tags">
           {[...subcategories].map((subcat) => (

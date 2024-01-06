@@ -79,7 +79,6 @@ h1 {
 .sort-dropdown select {
   font-family: "Space Grotesk";
   font-size: medium;
-  background-color: rgb(223, 227, 255); /* Light blue background color */
   border-radius: 8px;
   padding: 8px;
   border: 0;
@@ -88,7 +87,31 @@ h1 {
 }
 
 
+/* Style for the "Reset Sort" option when selected */
+.sort-dropdown select option[value="reset"] {
+  background-color: rgb(238, 238, 238); 
+}
+
+.sort-dropdown select[value="reset"] {
+  background-color: rgb(238, 238, 238); 
+}
+
+/* Style for the other options */
+.sort-dropdown select option:not([value="reset"]) {
+  background-color: rgb(223, 227, 255);
+}
+
+.sort-dropdown select:not([value="reset"]) {
+  background-color: rgb(223, 227, 255);
+}
+
+
+.sort-dropdown select option:focus {
+  outline: none;
+}
+
 .sort-dropdown select:focus {
   outline: none; /* Remove default focus outline */
   border: 0px solid; /* Set the border when focused */
 }
+

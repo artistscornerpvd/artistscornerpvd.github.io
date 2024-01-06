@@ -16,7 +16,7 @@ const CategoryPage = () => {
   const [currentItems, setCurrentItems] = useState([]);
   const [subcategories, setSubcategories] = useState(new Set());
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
-  const [selectedSort, setSelectedSort] = useState([]);
+  const [selectedSort, setSelectedSort] = useState("reset");
 
   const fetchItems = async () => {
     try {
@@ -106,17 +106,10 @@ const CategoryPage = () => {
           value={selectedSort}
           onChange={(e) => handleSort(e.target.value)}
           style={{
-            fontFamily: "Space Grotesk",
-            fontSize: "medium",
             backgroundColor:
-              selectedSort === "reset"
+              selectedSort === "reset" 
                 ? "rgb(238, 238, 238)"
                 : "rgb(223, 227, 255)",
-            borderRadius: "8px",
-            padding: "8px",
-            border: "0",
-            boxShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)",
-            transition: "all 0.3s ease",
           }}
         >
           <option value="reset">Reset Sort</option>

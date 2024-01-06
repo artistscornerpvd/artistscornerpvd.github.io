@@ -17,7 +17,6 @@ export type ItemTuple = [Item[], Item[]] | [];
 let client: StitchAppClient | undefined;
 let mongodb: RemoteMongoClient | undefined;
 
-
 /**
  * This file contains all the functions that interact with the MongoDB database. 
  * The following functions are (not including helpers):
@@ -63,7 +62,6 @@ let mongodb: RemoteMongoClient | undefined;
  *    newContactInformation: Map<String, String>) => void
  * markItemAsSold(id: BSON.ObjectId)
  */
-
 
 /**
  * Call this function ONCE at the begginging of a .tsx file to connect to the client.
@@ -247,6 +245,11 @@ export async function getItemsBySubcategory(
  */
 export async function searchItems(keywords: string): Promise<ItemTuple> {
   try {
+    // Handle the case when the search string is empty
+    if (keywords.trim() === "") {
+      return [[], []];
+    }
+
     await client?.auth.loginWithCredential(
       new UserApiKeyCredential(ACCESS_TOKEN)
     );
@@ -374,7 +377,7 @@ export async function getItemListById(
  * @param items an item[] to sort
  * @returns items[] sorted with price low to high
  */
-function sortPriceLowToHighHelper(items: Item[]): Item[] {
+export function sortPriceLowToHighHelper(items: Item[]): Item[] {
   return items.slice().sort((a, b) => a.price - b.price);
 }
 
@@ -403,7 +406,7 @@ export function sortPriceLowToHigh(itemTuple: ItemTuple): ItemTuple {
  * @param items an item[] to sort
  * @returns items[] sorted with price high to low
  */
-function sortByPriceHighToLowHelper(items: Item[]): Item[] {
+export function sortByPriceHighToLowHelper(items: Item[]): Item[] {
   return items.slice().sort((a, b) => b.price - a.price);
 }
 
@@ -432,7 +435,7 @@ export function sortByPriceHighToLow(itemTuple: ItemTuple): ItemTuple {
  * @param items an item[] to sort
  * @returns items[] sorted with timstamps from least recent to most recent
  */
-function sortLeastToMostRecentHelper(items: Item[]): Item[] {
+export function sortLeastToMostRecentHelper(items: Item[]): Item[] {
   return items.slice().sort((a, b) => {
     const aTime = new Date(a.timestamp).getTime();
     const bTime = new Date(b.timestamp).getTime();
@@ -466,7 +469,7 @@ export function sortLeastToMostRecent(itemTuple: ItemTuple): ItemTuple {
  * @param items an item[] to sort
  * @returns items[] sorted with timstamps from most recent to least recent
  */
-function sortMostToLeastRecentHelper(items: Item[]): Item[] {
+export function sortMostToLeastRecentHelper(items: Item[]): Item[] {
   return items.slice().sort((a, b) => {
     const aTime = new Date(a.timestamp).getTime();
     const bTime = new Date(b.timestamp).getTime();

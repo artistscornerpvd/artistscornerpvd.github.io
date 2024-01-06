@@ -86,13 +86,14 @@ const CategoryPage = () => {
         break;
 
       default:
-        return [masterItems, soldItems];
+        return [...masterItems, ...soldItems];
     }
 
     const [filtMasterItems, filtSoldItems] = combinedItems;
-    setCurrentItems([...filtMasterItems, ...filtSoldItems]);
+    const allFilteredItems = [...filtMasterItems, ...filtSoldItems]
+    setCurrentItems(allFilteredItems);
 
-    return combinedItems;
+    return allFilteredItems;
   };
 
   return (

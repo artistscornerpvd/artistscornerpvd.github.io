@@ -1,11 +1,8 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap");
+
 .mySlides {
   position: relative;
   width: 100%;
-}
-
-@font-face {
-  font-family: "Recoleta";
-  src: url(fonts/recoleta-regulardemo.otf);
 }
 
 .text {

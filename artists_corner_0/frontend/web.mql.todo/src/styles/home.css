@@ -4,10 +4,6 @@ html {
   scroll-behavior: smooth;
 }
 
-@font-face {
-  font-family: "Recoleta";
-  src: url(fonts/recoleta-regulardemo.otf);
-}
 
 h1,
 h2,

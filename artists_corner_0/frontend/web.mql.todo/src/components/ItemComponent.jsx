@@ -18,7 +18,7 @@ const ItemComponent = ({ item }) => {
           <b>{item.title}</b>
         </p>
         <div className="price-container">
-          <p className="price">${item.price}</p>
+          <p className="price">${item.price.toFixed(2)}</p>
           {item.ifSold && <div className="ribbon">Sold</div>}
         </div>
       </Link>

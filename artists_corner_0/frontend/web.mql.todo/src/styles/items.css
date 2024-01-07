@@ -60,7 +60,7 @@
   
   /* Add the following properties to make it inline */
   position: relative;
-  margin-left: 10px;
+  margin-left: 5px;
 
   width: 60px;
   padding: 0 calc(var(--s) + var(--d)) var(--d);

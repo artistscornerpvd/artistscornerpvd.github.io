@@ -38,11 +38,14 @@ const ItemDetailPage = () => {
     );
   }
 
-
   return (
     <div>
       <div className="content animated" style={{ paddingTop: "20px" }}>
-      <Link to="#" className="back-link" onClick={() => window.history.back()}>
+        <Link
+          to="#"
+          className="back-link"
+          onClick={() => window.history.back()}
+        >
           &lt; Back
         </Link>
         <section style={{ display: "flex", margin: "3rem 0 7rem 12rem" }}>
@@ -73,7 +76,13 @@ const ItemDetailPage = () => {
             </div>
 
             <h2 style={{ margin: "0rem" }}>{item.title}</h2>
-            <h3 style={{ margin: "0rem" }}>${item.price}</h3>
+            <h3 style={{ margin: "0rem" }}>
+              {" "}
+              <div className="price-container">
+                <p className="price">${item.price.toFixed(2)}</p>
+                {item.ifSold && <div className="ribbon" style={{height: "25px", marginLeft:"15px"}}>Sold</div>}
+              </div>
+            </h3>
             <p style={{ marginBottom: "0.8rem" }}>{item.description}</p>
             <hr />
 

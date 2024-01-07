@@ -3,7 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import {
   searchItems,
   sortPriceLowToHighHelper,
-  sortByPriceHighToLowHelper,
+  sortPriceHighToLowHelper,
   sortMostToLeastRecentHelper,
   sortLeastToMostRecentHelper,
 } from "../mongo/Mongo-Functions";
@@ -88,7 +88,7 @@ const SearchPage = ({
         break;
 
       case "highToLow":
-        combinedItems = sortByPriceHighToLowHelper(currentItems);
+        combinedItems = sortPriceHighToLowHelper(currentItems);
         break;
 
       case "mostRecent":

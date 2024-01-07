@@ -1,5 +1,5 @@
 import { BSON } from "bson";
-import * as MongoFunctions from "../../src/mongo/Mongo-Functions";
+import * as MongoFunctions from "../../artists_corner_0/frontend/web.mql.todo/src/mongo/Mongo-Functions";
 
 beforeAll(async () => {
   // Call the function to initialize the Stitch client

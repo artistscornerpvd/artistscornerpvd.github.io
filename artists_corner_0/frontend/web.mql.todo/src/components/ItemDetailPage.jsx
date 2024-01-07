@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getItemById, getAccountByUsername } from "../mongo/Mongo-Functions";
 import { BSON } from "mongodb-stitch-browser-sdk";
 import "../styles/items.css";
+//import Account from "../models/account";
 
 const ItemDetailPage = () => {
   const { itemId } = useParams();
@@ -16,7 +17,7 @@ const ItemDetailPage = () => {
         if (fetchedItem) {
           setItem(fetchedItem);
           const fetchedSeller = await getAccountByUsername(fetchedItem.seller);
-          setSeller(fetchedSeller);
+          setSeller(fetchedSeller)
         }
       } catch (error) {
         console.error(error);
@@ -25,6 +26,7 @@ const ItemDetailPage = () => {
 
     fetchItemAndSeller();
   }, [itemId]);
+
 
   if (!item || !seller) {
     return <div className="loading-spinner-container">
@@ -57,7 +59,7 @@ const ItemDetailPage = () => {
           <div className="profile-container">
             <img
               className="profile-photo"
-              src={seller.photoProfileFilename}
+              src={"../../data/photos/" + seller.profilePhotoFilename}
               alt={seller.fullname}
             />
             <a href={`/user/${seller.username}`}>{seller.fullname}</a>

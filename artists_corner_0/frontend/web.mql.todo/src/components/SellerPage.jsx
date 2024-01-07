@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getAccountByUsername, getItemById } from "../mongo/Mongo-Functions";
+import {
+  getAccountByUsername,
+  getItemById,
+  getItemListById,
+} from "../mongo/Mongo-Functions";
 import ItemComponent from "./ItemComponent";
 import "../styles/category.css";
 
 const SellerPage = () => {
   const { username } = useParams();
+  const [account, setAccount] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const [currentItems, setCurrentItems] = useState([]);
   const [soldItems, setSoldItems] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   const fetchItems = async (itemIds) => {
     return Promise.all(itemIds.map((id) => getItemById(id)));
@@ -16,34 +22,51 @@ const SellerPage = () => {
 
   useEffect(() => {
     getAccountByUsername(username)
-      .then((account) => {
-        if (account) {
-          // Fetch current items
-          const fetchCurrentItems = fetchItems(account.currentListing_ids);
-          // Fetch sold items
-          const fetchSoldItems = fetchItems(account.pastListing_ids);
-
-          return Promise.all([fetchCurrentItems, fetchSoldItems]);
+      .then(async (fetchedAccount) => {
+        if (fetchedAccount) {
+          setAccount(fetchedAccount);
+  
+          // Now that account is set, fetch items
+          if (fetchedAccount.currentListing_ids && fetchedAccount.pastListing_ids) {
+            const fetchedCurrentItems = await fetchItems(fetchedAccount.currentListing_ids);
+            const fetchedSoldItems = await fetchItems(fetchedAccount.pastListing_ids);
+            setCurrentItems(fetchedCurrentItems);
+            setSoldItems(fetchedSoldItems);
+          } else {
+            throw new Error("Seller's items not found");
+          }
         } else {
           throw new Error("Seller account not found");
         }
-      })
-      .then(([fetchedCurrentItems, fetchedSoldItems]) => {
-        setCurrentItems(fetchedCurrentItems.filter((item) => item));
-        setSoldItems(fetchedSoldItems.filter((item) => item));
       })
       .catch((error) => {
         console.error("Error fetching seller's items:", error);
       })
       .finally(() => {
-        setLoading(false); // Set loading to false after the data fetching is completed
+        setLoading(false);
       });
-  }, [username]);
-
+  }, [username, account]);
+  
+  
+  
+  if (loading) {
+    return (
+      <div className="loading-spinner-container">
+        <div className="loading-spinner"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="category-page-container">
       <h1>{username}'s Shop</h1>
+
+      {account && (
+        <div>
+          <p>Hi, I'm {account.fullname} 👋.</p>
+          <p>{account.bio}</p>
+        </div>
+      )}
 
       {currentItems.length > 0 && (
         <>

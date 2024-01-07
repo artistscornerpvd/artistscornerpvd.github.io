@@ -44,7 +44,7 @@ const SearchPage = ({
     } catch (error) {
       console.error("Error fetching items:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -109,7 +109,6 @@ const SearchPage = ({
     setCurrentItems(combinedItems);
     return combinedItems;
   };
-
 
   if (loading) {
     return (

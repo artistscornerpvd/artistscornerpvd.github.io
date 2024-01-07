@@ -76,7 +76,7 @@ function App() {
             />
           }
         />
-        <Route path="/user/:username" element={<SellerPage />} />
+        <Route path="/user/:username" element={<SellerPage />} />{" "}
       </Routes>
 
       <div className="footer">

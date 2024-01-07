@@ -33,7 +33,7 @@ const CategoryPage = () => {
     } catch (error) {
       console.error("Error fetching items:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -93,7 +93,7 @@ const CategoryPage = () => {
     }
 
     const [filtMasterItems, filtSoldItems] = combinedItems;
-    const allFilteredItems = [...filtMasterItems, ...filtSoldItems]
+    const allFilteredItems = [...filtMasterItems, ...filtSoldItems];
     setCurrentItems(allFilteredItems);
 
     return allFilteredItems;
@@ -119,7 +119,7 @@ const CategoryPage = () => {
           onChange={(e) => handleSort(e.target.value)}
           style={{
             backgroundColor:
-              selectedSort === "reset" 
+              selectedSort === "reset"
                 ? "rgb(238, 238, 238)"
                 : "rgb(223, 227, 255)",
           }}

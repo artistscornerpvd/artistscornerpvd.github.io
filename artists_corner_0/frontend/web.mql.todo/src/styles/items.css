@@ -65,3 +65,7 @@
   100% { transform: rotate(360deg); }
 }
 
+.back-link{
+  margin-left: 5rem;
+}
+

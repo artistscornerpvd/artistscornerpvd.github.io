@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import {
   searchItems,
   sortPriceLowToHighHelper,
@@ -23,9 +24,14 @@ const SearchPage = ({
   const [currentItems, setCurrentItems] = useState([]);
   const [selectedSort, setSelectedSort] = useState("reset");
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  // Extract everything after "keywords="
+  const keywordsParam = searchParams.get("keywords");
+
   const fetchItems = async () => {
     try {
-      const [masterItems, soldItems] = await searchItems(searchString);
+      const [masterItems, soldItems] = await searchItems(keywordsParam);
       const combinedItems = [...masterItems, ...soldItems];
 
       setAllSearchItems(combinedItems);
@@ -39,12 +45,14 @@ const SearchPage = ({
     }
   };
   useEffect(() => {
-    fetchItems();
+    if (location.search && keywordsParam) {
+      fetchItems();
+    }
     if (ifClicked) {
       setSearchString("")
       setIfClicked(false);
     }
-  }, [searchString, ifClicked]);
+  }, [location, keywordsParam, searchString, ifClicked]);
 
   const handleCategoryClick = async (category) => {
     setSelectedCategory(category);

@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 import { getItemById, getAccountByUsername } from "../mongo/Mongo-Functions";
 import { BSON } from "mongodb-stitch-browser-sdk";
 import "../styles/items.css";
+//import Account from "../models/account";
 
 const ItemDetailPage = () => {
   const { itemId } = useParams();
   const [item, setItem] = useState(null);
   const [seller, setSeller] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchItemAndSeller = async () => {
@@ -20,83 +23,135 @@ const ItemDetailPage = () => {
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchItemAndSeller();
   }, [itemId]);
 
-  if (!item || !seller) {
-    return <div>Loading...</div>;
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : item.photoFilenames.length - 1
+    );
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex < item.photoFilenames.length - 1 ? prevIndex + 1 : 0
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="loading-spinner-container">
+        <div className="loading-spinner"></div>
+      </div>
+    );
   }
 
   return (
-    <div className="content animated">
-      <section
-        style={{ display: "flex", marginBottom: "7rem", marginLeft: "5rem" }}
-      >
-        {item.photoFilenames.length > 0 && (
-          <img
-            className="card-image"
-            src={item.photoFilenames[0]}
-            alt={item.title}
-          />
-        )}
-
-        <div
-          className="about"
-          style={{
-            maxWidth: "26rem",
-            backgroundColor: "#f8f8f8",
-            padding: "2rem",
-            borderRadius: "10px",
-          }}
+    <div>
+      <div className="content animated" style={{ paddingTop: "20px" }}>
+        <Link
+          to="#"
+          className="back-link"
+          onClick={() => window.history.back()}
         >
-          <div className="profile-container">
+          &lt; Back
+        </Link>
+        <section style={{ display: "flex", margin: "3rem 0 7rem 12rem" }}>
+        {item.photoFilenames.length > 1 ? (
+            <div className="slideshow-container">
+              <button className="prev-btn" onClick={handlePrevImage}>
+                &#10094;
+              </button>
+              <img
+                className="card-image"
+                src={item.photoFilenames[currentImageIndex]}
+                alt={item.title}
+              />
+              <button className="next-btn" onClick={handleNextImage}>
+                &#10095;
+              </button>
+            </div>
+          ) : (
             <img
-              className="profile-photo"
-              src={seller.photoProfileFilenames}
-              alt={seller.fullname}
+              className="card-image"
+              src={item.photoFilenames[0]}
+              alt={item.title}
             />
-            <a href={`/user/${seller.username}`}>{seller.fullname}</a>
-          </div>
+          )}
 
-          <h2 style={{ margin: "0rem" }}>{item.title}</h2>
-          <h3 style={{ margin: "0rem" }}>${item.price}</h3>
-          <p style={{ marginBottom: "0.8rem" }}>{item.description}</p>
-          <hr />
+          <div
+            className="about"
+            style={{
+              maxWidth: "26rem",
+              backgroundColor: "#f8f8f8",
+              padding: "2rem",
+              borderRadius: "10px",
+            }}
+          >
+            <div className="profile-container">
+              <img
+                className="profile-photo"
+                src={"../../data/photos/" + seller.profilePhotoFilename}
+                alt={seller.fullname}
+              />
+              <a href={`/user/${seller.username}`}>{seller.fullname}</a>
+            </div>
 
-          <div>
-            <p>
-              <b>Contact</b>
-            </p>
-            <p>
-              💌 &nbsp;
-              <a href={`mailto:${seller.contactInformation.email}`}>
-                {seller.contactInformation.email}
-              </a>
-            </p>
-            {seller.contactInformation["phone number"] && (
+            <h2 style={{ margin: "0rem" }}>{item.title}</h2>
+            <h3 style={{ margin: "0rem" }}>
+              {" "}
+              <div className="price-container">
+                <p className="price">${item.price.toFixed(2)}</p>
+                {item.ifSold && (
+                  <div
+                    className="ribbon"
+                    style={{ height: "25px", marginLeft: "15px" }}
+                  >
+                    Sold
+                  </div>
+                )}
+              </div>
+            </h3>
+            <p style={{ marginBottom: "0.8rem" }}>{item.description}</p>
+            <hr />
+
+            <div>
               <p>
-                📞 &nbsp;
-                <a href={`tel:${seller.contactInformation["phone number"]}`}>
-                  {seller.contactInformation["phone number"]}
+                <b>Contact</b>
+              </p>
+              <p>
+                💌 &nbsp;
+                <a href={`mailto:${seller.contactInformation.email}`}>
+                  {seller.contactInformation.email}
                 </a>
               </p>
-            )}
-            {seller.contactInformation.instagram && (
-              <p>
-                IG: &nbsp;
-                <a
-                  href={`https://www.instagram.com/${seller.contactInformation.instagram}`}
-                >
-                  @{seller.contactInformation.instagram}
-                </a>
-              </p>
-            )}
+              {seller.contactInformation["phone number"] && (
+                <p>
+                  📞 &nbsp;
+                  <a href={`tel:${seller.contactInformation["phone number"]}`}>
+                    {seller.contactInformation["phone number"]}
+                  </a>
+                </p>
+              )}
+              {seller.contactInformation.instagram && (
+                <p>
+                  IG: &nbsp;
+                  <a
+                    href={`https://www.instagram.com/${seller.contactInformation.instagram}`}
+                  >
+                    @{seller.contactInformation.instagram}
+                  </a>
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import {
   getItemsByCategory,
   sortPriceLowToHigh,
-  sortByPriceHighToLow,
+  sortPriceHighToLow,
   sortMostToLeastRecent,
   sortLeastToMostRecent,
   getItemsByCategoryAndSubcategory,
@@ -74,7 +74,7 @@ const CategoryPage = () => {
         break;
 
       case "highToLow":
-        combinedItems = sortByPriceHighToLow([masterItems, soldItems]);
+        combinedItems = sortPriceHighToLow([masterItems, soldItems]);
         break;
 
       case "mostRecent":

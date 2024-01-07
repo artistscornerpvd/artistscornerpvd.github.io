@@ -1,4 +1,3 @@
-import React from "react";
 import "../styles/about.css";
 import pranaviImage from "../images/about-us/pranavi.jpg";
 import dorindaImage from "../images/about-us/dorinda.jpg";
@@ -24,6 +23,11 @@ function AboutPage() {
             a streamlined, safe environment. With our exclusive focus on Brown
             and RISD we hope to ensure a unique, intimate experience and foster
             a strong sense of community.
+          </p>
+          <p>
+            This website is currently being maintained by Pranavi👋. If you have
+            any questions or feedback, please email {" "} 
+            <a href="mailto:artistscorverpvd@brown.edu">artistscorverpvd@brown.edu</a>!
           </p>
         </section>
         <section className="team">

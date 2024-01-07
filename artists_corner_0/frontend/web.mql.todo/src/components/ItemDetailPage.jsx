@@ -27,7 +27,9 @@ const ItemDetailPage = () => {
   }, [itemId]);
 
   if (!item || !seller) {
-    return <div>Loading...</div>;
+    return <div className="loading-spinner-container">
+    <div className="loading-spinner"></div>
+  </div>;
   }
 
   return (
@@ -55,7 +57,7 @@ const ItemDetailPage = () => {
           <div className="profile-container">
             <img
               className="profile-photo"
-              src={seller.photoProfileFilenames}
+              src={seller.photoProfileFilename}
               alt={seller.fullname}
             />
             <a href={`/user/${seller.username}`}>{seller.fullname}</a>

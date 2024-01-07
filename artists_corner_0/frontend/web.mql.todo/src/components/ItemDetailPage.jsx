@@ -9,6 +9,7 @@ const ItemDetailPage = () => {
   const { itemId } = useParams();
   const [item, setItem] = useState(null);
   const [seller, setSeller] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchItemAndSeller = async () => {
@@ -21,13 +22,15 @@ const ItemDetailPage = () => {
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchItemAndSeller();
   }, [itemId]);
 
-  if (!item || !seller) {
+  if (loading) {
     return (
       <div className="loading-spinner-container">
         <div className="loading-spinner"></div>
@@ -35,16 +38,11 @@ const ItemDetailPage = () => {
     );
   }
 
+
   return (
     <div>
       <div className="content animated" style={{ paddingTop: "20px" }}>
-        <Link
-          to={`/category/${
-            item.category.charAt(0).toUpperCase() + item.category.slice(1)
-          }`}
-          className="back-link"
-        >
-          {/* Add back arrow or text, customize as needed */}
+      <Link to="#" className="back-link" onClick={() => window.history.back()}>
           &lt; Back
         </Link>
         <section style={{ display: "flex", margin: "3rem 0 7rem 12rem" }}>

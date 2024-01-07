@@ -49,7 +49,7 @@ const SearchPage = ({
       fetchItems();
     }
     if (ifClicked) {
-      setSearchString("")
+      setSearchString("");
       setIfClicked(false);
     }
   }, [location, keywordsParam, searchString, ifClicked]);

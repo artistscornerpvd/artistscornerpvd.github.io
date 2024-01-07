@@ -107,3 +107,22 @@
   margin-left: 5rem;
 }
 
+.slideshow-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prev-btn,
+.next-btn {
+  position: relative;
+  font-size: 24px;
+  cursor: pointer;
+  color: gray;
+  background: none;
+  border: none;
+  outline: none;
+  transform: translateY(-50%);
+}
+

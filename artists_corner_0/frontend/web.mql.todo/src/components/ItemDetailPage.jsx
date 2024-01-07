@@ -10,6 +10,7 @@ const ItemDetailPage = () => {
   const [item, setItem] = useState(null);
   const [seller, setSeller] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchItemAndSeller = async () => {
@@ -30,6 +31,18 @@ const ItemDetailPage = () => {
     fetchItemAndSeller();
   }, [itemId]);
 
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : item.photoFilenames.length - 1
+    );
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex < item.photoFilenames.length - 1 ? prevIndex + 1 : 0
+    );
+  };
+
   if (loading) {
     return (
       <div className="loading-spinner-container">
@@ -49,7 +62,21 @@ const ItemDetailPage = () => {
           &lt; Back
         </Link>
         <section style={{ display: "flex", margin: "3rem 0 7rem 12rem" }}>
-          {item.photoFilenames.length > 0 && (
+        {item.photoFilenames.length > 1 ? (
+            <div className="slideshow-container">
+              <button className="prev-btn" onClick={handlePrevImage}>
+                &#10094;
+              </button>
+              <img
+                className="card-image"
+                src={item.photoFilenames[currentImageIndex]}
+                alt={item.title}
+              />
+              <button className="next-btn" onClick={handleNextImage}>
+                &#10095;
+              </button>
+            </div>
+          ) : (
             <img
               className="card-image"
               src={item.photoFilenames[0]}
@@ -80,7 +107,14 @@ const ItemDetailPage = () => {
               {" "}
               <div className="price-container">
                 <p className="price">${item.price.toFixed(2)}</p>
-                {item.ifSold && <div className="ribbon" style={{height: "25px", marginLeft:"15px"}}>Sold</div>}
+                {item.ifSold && (
+                  <div
+                    className="ribbon"
+                    style={{ height: "25px", marginLeft: "15px" }}
+                  >
+                    Sold
+                  </div>
+                )}
               </div>
             </h3>
             <p style={{ marginBottom: "0.8rem" }}>{item.description}</p>

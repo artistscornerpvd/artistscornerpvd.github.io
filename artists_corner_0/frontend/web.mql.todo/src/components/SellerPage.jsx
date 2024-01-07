@@ -8,6 +8,7 @@ const SellerPage = () => {
   const { username } = useParams();
   const [currentItems, setCurrentItems] = useState([]);
   const [soldItems, setSoldItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchItems = async (itemIds) => {
     return Promise.all(itemIds.map((id) => getItemById(id)));
@@ -33,8 +34,12 @@ const SellerPage = () => {
       })
       .catch((error) => {
         console.error("Error fetching seller's items:", error);
+      })
+      .finally(() => {
+        setLoading(false); // Set loading to false after the data fetching is completed
       });
   }, [username]);
+
 
   return (
     <div className="category-page-container">
@@ -60,10 +65,6 @@ const SellerPage = () => {
             ))}
           </div>
         </>
-      )}
-
-      {currentItems.length === 0 && soldItems.length === 0 && (
-        <p>No items found for this seller.</p>
       )}
     </div>
   );

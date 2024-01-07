@@ -17,6 +17,7 @@ const CategoryPage = () => {
   const [subcategories, setSubcategories] = useState(new Set());
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [selectedSort, setSelectedSort] = useState("reset");
+  const [loading, setLoading] = useState(true);
 
   const fetchItems = async () => {
     try {
@@ -31,6 +32,8 @@ const CategoryPage = () => {
       setSubcategories(subcategoriesSet);
     } catch (error) {
       console.error("Error fetching items:", error);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -95,6 +98,14 @@ const CategoryPage = () => {
 
     return allFilteredItems;
   };
+
+  if (loading) {
+    return (
+      <div className="loading-spinner-container">
+        <div className="loading-spinner"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="category-page-container">

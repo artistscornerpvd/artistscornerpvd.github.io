@@ -99,7 +99,7 @@ const ItemDetailPage = () => {
                 src={"../../data/photos/" + seller.profilePhotoFilename}
                 alt={seller.fullname}
               />
-              <a href={`/user/${seller.username}`}>{seller.fullname}</a>
+              <Link to={`/user/${seller.username}`}>{seller.username}</Link>
             </div>
 
             <h2 style={{ margin: "0rem" }}>{item.title}</h2>

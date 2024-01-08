@@ -18,6 +18,7 @@ const SearchPage = ({
 }) => {
   const [categories, setCategories] = useState(new Set());
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const [allSearchItems, setAllSearchItems] = useState([]);
   const [unsortedItems, setUnsortedItems] = useState([]);
@@ -42,6 +43,8 @@ const SearchPage = ({
       setCategories(categoriesSet);
     } catch (error) {
       console.error("Error fetching items:", error);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -106,6 +109,14 @@ const SearchPage = ({
     setCurrentItems(combinedItems);
     return combinedItems;
   };
+
+  if (loading) {
+    return (
+      <div className="loading-spinner-container">
+        <div className="loading-spinner"></div>
+      </div>
+    );
+  }
 
   return (
     <div>

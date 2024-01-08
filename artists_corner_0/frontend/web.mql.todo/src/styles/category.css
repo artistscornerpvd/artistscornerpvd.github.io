@@ -10,6 +10,16 @@ h1 {
   margin-left: 8rem;
 }
 
+.account-items-list h2{
+  margin: 50px 0 0 7.5rem;
+  font-size: 2rem;
+}
+
+.account-info p {
+  margin: 0 7rem 0.5rem 8rem;
+}
+
+
 .subcategory-items-container {
   display: flex;
 }
@@ -104,4 +114,35 @@ h1 {
   outline: none; /* Remove default focus outline */
   border: 0px solid; /* Set the border when focused */
 }
+
+.back-link{
+  margin-left: 5rem;
+}
+
+/* LoadingSpinner css */
+
+.loading-spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin-top: -7rem;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
 

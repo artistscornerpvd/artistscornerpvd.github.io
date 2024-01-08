@@ -17,6 +17,7 @@ const CategoryPage = () => {
   const [subcategories, setSubcategories] = useState(new Set());
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [selectedSort, setSelectedSort] = useState("reset");
+  const [loading, setLoading] = useState(true);
 
   const fetchItems = async () => {
     try {
@@ -31,6 +32,8 @@ const CategoryPage = () => {
       setSubcategories(subcategoriesSet);
     } catch (error) {
       console.error("Error fetching items:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -90,11 +93,19 @@ const CategoryPage = () => {
     }
 
     const [filtMasterItems, filtSoldItems] = combinedItems;
-    const allFilteredItems = [...filtMasterItems, ...filtSoldItems]
+    const allFilteredItems = [...filtMasterItems, ...filtSoldItems];
     setCurrentItems(allFilteredItems);
 
     return allFilteredItems;
   };
+
+  if (loading) {
+    return (
+      <div className="loading-spinner-container">
+        <div className="loading-spinner"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="category-page-container">
@@ -108,7 +119,7 @@ const CategoryPage = () => {
           onChange={(e) => handleSort(e.target.value)}
           style={{
             backgroundColor:
-              selectedSort === "reset" 
+              selectedSort === "reset"
                 ? "rgb(238, 238, 238)"
                 : "rgb(223, 227, 255)",
           }}

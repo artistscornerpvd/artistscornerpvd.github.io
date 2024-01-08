@@ -3,7 +3,10 @@ import { useParams, Link } from "react-router-dom";
 import { getItemById, getAccountByUsername } from "../mongo/Mongo-Functions";
 import { BSON } from "mongodb-stitch-browser-sdk";
 import "../styles/items.css";
-//import Account from "../models/account";
+import instagramLogo from "../images/socials/Instagram_logo.png";
+import facebookLogo from "../images/socials/Facebook_logo.png";
+import twitterLogo from "../images/socials/Twitter_logo.png";
+
 
 const ItemDetailPage = () => {
   const { itemId } = useParams();
@@ -97,9 +100,9 @@ const ItemDetailPage = () => {
               <img
                 className="profile-photo"
                 src={"../../data/photos/" + seller.profilePhotoFilename}
-                alt={seller.fullname}
+                alt={seller.username}
               />
-              <a href={`/user/${seller.username}`}>{seller.fullname}</a>
+              <Link to={`/user/${seller.username}`}>{seller.username}</Link>
             </div>
 
             <h2 style={{ margin: "0rem" }}>{item.title}</h2>
@@ -140,7 +143,15 @@ const ItemDetailPage = () => {
               )}
               {seller.contactInformation.instagram && (
                 <p>
-                  IG: &nbsp;
+                  <img
+                    src={instagramLogo}
+                    alt={"Instagram logo"}
+                    style={{
+                      width: "23px",
+                      height: "23px",
+                      marginBottom: "-6px",
+                    }} // Adjust the width and height as needed
+                  /> &nbsp;
                   <a
                     href={`https://www.instagram.com/${seller.contactInformation.instagram}`}
                   >
@@ -148,6 +159,43 @@ const ItemDetailPage = () => {
                   </a>
                 </p>
               )}
+              {seller.contactInformation.facebook && (
+                <p>
+                   <img
+                    src={facebookLogo}
+                    alt={"Facebook logo"}
+                    style={{
+                      width: "21px",
+                      height: "21px",
+                      marginBottom: "-5px",
+                    }} // Adjust the width and height as needed
+                  /> &nbsp;
+                  <a
+                    href={`https://www.facebook.com/${seller.contactInformation.facebook}`}
+                  >
+                    @{seller.contactInformation.facebook}
+                  </a>
+                </p>
+              )}
+              {seller.contactInformation.twitter && (
+                <p>
+                  <img
+                    src={twitterLogo}
+                    alt={"Twitter logo"}
+                    style={{
+                      width: "23px",
+                      height: "20px",
+                      marginBottom: "-7px",
+                    }} // Adjust the width and height as needed
+                  /> &nbsp;
+                  <a
+                    href={`https://www.twitter.com/${seller.contactInformation.twitter}`}
+                  >
+                    @{seller.contactInformation.twitter}
+                  </a>
+                </p>
+              )}
+              
             </div>
           </div>
         </section>

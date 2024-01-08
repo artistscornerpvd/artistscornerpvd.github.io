@@ -70,7 +70,7 @@ const SellerPage = () => {
         >
           &lt; Back
         </Link>
-      <h1>{username}'s Shop</h1>
+      <h1 style={{marginTop: "30px", marginLeft: "8.5rem"}}>{username}'s Shop</h1>
 
       {account && (
         <div className="account-info">
@@ -163,11 +163,11 @@ const SellerPage = () => {
           </div>
         </div>
       )}
-
+      <div className="account-items-list">
       {currentItems.length > 0 && (
         <>
           <h2>Current Listings</h2>
-          <div className="items-grid">
+          <div className="items-grid" style={{marginLeft: "7rem", marginRight: "7rem"}}>
             {currentItems.map((item) => (
               <ItemComponent key={item._id} item={item} />
             ))}
@@ -178,13 +178,14 @@ const SellerPage = () => {
       {soldItems.length > 0 && (
         <>
           <h2>Sold Items</h2>
-          <div className="items-grid">
+          <div className="items-grid" style={{marginLeft: "7rem", marginRight: "7rem"}}>
             {soldItems.map((item) => (
               <ItemComponent key={item._id} item={item} />
             ))}
           </div>
         </>
       )}
+      </div>
     </div>
   );
 };

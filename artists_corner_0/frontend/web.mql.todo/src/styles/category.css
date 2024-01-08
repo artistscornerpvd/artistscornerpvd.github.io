@@ -10,6 +10,11 @@ h1 {
   margin-left: 8rem;
 }
 
+.account-info p {
+  margin: 0 7rem 0.5rem 8rem;
+}
+
+
 .subcategory-items-container {
   display: flex;
 }
@@ -105,6 +110,10 @@ h1 {
   border: 0px solid; /* Set the border when focused */
 }
 
+.back-link{
+  margin-left: 5rem;
+}
+
 /* LoadingSpinner css */
 
 .loading-spinner-container {
@@ -128,5 +137,7 @@ h1 {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+
 
 

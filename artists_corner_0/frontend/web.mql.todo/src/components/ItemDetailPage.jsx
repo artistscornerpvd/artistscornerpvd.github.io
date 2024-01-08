@@ -97,7 +97,7 @@ const ItemDetailPage = () => {
               <img
                 className="profile-photo"
                 src={"../../data/photos/" + seller.profilePhotoFilename}
-                alt={seller.fullname}
+                alt={seller.username}
               />
               <Link to={`/user/${seller.username}`}>{seller.username}</Link>
             </div>
@@ -148,6 +148,27 @@ const ItemDetailPage = () => {
                   </a>
                 </p>
               )}
+              {seller.contactInformation.facebook && (
+                <p>
+                  FB: &nbsp;
+                  <a
+                    href={`https://www.facebook.com/${seller.contactInformation.facebook}`}
+                  >
+                    @{seller.contactInformation.facebook}
+                  </a>
+                </p>
+              )}
+              {seller.contactInformation.twitter && (
+                <p>
+                  TW: &nbsp;
+                  <a
+                    href={`https://www.twitter.com/${seller.contactInformation.twitter}`}
+                  >
+                    @{seller.contactInformation.twitter}
+                  </a>
+                </p>
+              )}
+              
             </div>
           </div>
         </section>

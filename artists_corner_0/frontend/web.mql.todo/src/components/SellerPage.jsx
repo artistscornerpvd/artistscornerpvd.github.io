@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import {
-  getAccountByUsername,
-  getItemById,
-  getItemListById,
-} from "../mongo/Mongo-Functions";
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { getAccountByUsername, getItemById } from "../mongo/Mongo-Functions";
 import ItemComponent from "./ItemComponent";
 import "../styles/category.css";
+import instagramLogo from "../images/socials/Instagram_logo.png";
+import facebookLogo from "../images/socials/Facebook_logo.png";
+import twitterLogo from "../images/socials/Twitter_logo.png";
 
 const SellerPage = () => {
   const { username } = useParams();
@@ -25,30 +24,35 @@ const SellerPage = () => {
       .then(async (fetchedAccount) => {
         if (fetchedAccount) {
           setAccount(fetchedAccount);
-  
+
           // Now that account is set, fetch items
-          if (fetchedAccount.currentListing_ids && fetchedAccount.pastListing_ids) {
-            const fetchedCurrentItems = await fetchItems(fetchedAccount.currentListing_ids);
-            const fetchedSoldItems = await fetchItems(fetchedAccount.pastListing_ids);
+          if (
+            fetchedAccount.currentListing_ids &&
+            fetchedAccount.pastListing_ids
+          ) {
+            const fetchedCurrentItems = await fetchItems(
+              fetchedAccount.currentListing_ids
+            );
+            const fetchedSoldItems = await fetchItems(
+              fetchedAccount.pastListing_ids
+            );
             setCurrentItems(fetchedCurrentItems);
             setSoldItems(fetchedSoldItems);
           } else {
-            throw new Error("Seller's items not found");
+            throw new Error("account's items not found");
           }
         } else {
-          throw new Error("Seller account not found");
+          throw new Error("account account not found");
         }
       })
       .catch((error) => {
-        console.error("Error fetching seller's items:", error);
+        console.error("Error fetching account's items:", error);
       })
       .finally(() => {
         setLoading(false);
       });
   }, [username, account]);
-  
-  
-  
+
   if (loading) {
     return (
       <div className="loading-spinner-container">
@@ -58,13 +62,105 @@ const SellerPage = () => {
   }
 
   return (
-    <div className="category-page-container">
+    <div className="category-page-container" style={{ paddingTop: "20px" }}>
+      <Link
+          to="#"
+          className="back-link"
+          onClick={() => window.history.back()}
+        >
+          &lt; Back
+        </Link>
       <h1>{username}'s Shop</h1>
 
       {account && (
-        <div>
-          <p>Hi, I'm {account.fullname} 👋.</p>
-          <p>{account.bio}</p>
+        <div className="account-info">
+          <div className="profile-container">
+          <p style={{fontSize: "20px", marginTop: "25px"}}>
+            <img
+              className="profile-photo"
+              src={"../../data/photos/" + account.profilePhotoFilename}
+              alt={account.fullname}
+              style={{marginBottom: "-12px"}}
+            />
+            {account.fullname}</p>
+          </div>
+          <div>
+            <p>Contact me at:
+              💌&nbsp;
+              <a href={`mailto:${account.contactInformation.email}`}>
+                {account.contactInformation.email}
+              </a>
+              &nbsp; · &nbsp;
+              {account.contactInformation["phone number"] && (
+                <>
+                  📞&nbsp;
+                  <a href={`tel:${account.contactInformation["phone number"]}`}>
+                    {account.contactInformation["phone number"]}
+                  </a>
+                  &nbsp; · &nbsp;
+                </>
+              )}
+              {account.contactInformation.instagram && (
+                <>
+                  <img
+                    src={instagramLogo}
+                    alt={"Instagram logo"}
+                    style={{
+                      width: "23px",
+                      height: "23px",
+                      marginBottom: "-6px",
+                    }} // Adjust the width and height as needed
+                  />
+                  &nbsp;
+                  <a
+                    href={`https://www.instagram.com/${account.contactInformation.instagram}`}
+                  >
+                    @{account.contactInformation.instagram}
+                  </a>
+                </>
+              )}
+              {account.contactInformation.facebook && (
+                <>
+                  <img
+                    src={facebookLogo}
+                    alt={"Facebook logo"}
+                    style={{
+                      width: "23px",
+                      height: "23px",
+                      marginBottom: "-6px",
+                    }} // Adjust the width and height as needed
+                  />
+                  &nbsp;
+                  <a href={`tel:${account.contactInformation.facebook}`}>
+                    @{account.contactInformation.facebook}
+                  </a>
+                  &nbsp; · &nbsp;
+                </>
+              )}
+              {account.contactInformation.twitter && (
+                <>
+                  <img
+                    src={twitterLogo}
+                    alt={"Twitter logo"}
+                    style={{
+                      width: "23px",
+                      height: "20px",
+                      marginBottom: "-7px",
+                    }} // Adjust the width and height as needed
+                  />
+                  &nbsp;
+                  <a href={`tel:${account.contactInformation.twitter}`}>
+                    @{account.contactInformation.twitter}
+                  </a>
+                  &nbsp; · &nbsp;
+                </>
+              )}
+            </p>
+          </div>
+          <hr style={{ margin: '30px 0 25px 6rem', borderColor: 'gray', borderWidth: '2px', width: '80%' }} />
+          <div>
+            <p>{account.bio}</p>
+          </div>
         </div>
       )}
 

@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from "react";
-
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "../styles/slideshow.css";
-import image1 from "../images/slideshow/sayles_dance.jpeg";
-import image2 from "../images/slideshow/list_painting.jpeg";
-import image3 from "../images/slideshow/pottery.jpeg";
+import listImg from "../images/slideshow/list_painting.jpeg";
+import jazzImg from "../images/slideshow/jazz_art.jpeg";
+import orchestraImg from "../images/slideshow/orchestra.jpeg";
 
 const slidesData = [
   {
-    image: image1,
-    caption: "20 Dec: Dance Performance at Sayles",
+    image: listImg,
+    caption: "7 Dec: Visual Art Bingo Night at List",
+    link: "https://events.brown.edu/event/276122-va-bingo-night"
   },
   {
-    image: image2,
-    caption: "21 Dec: Painting Exhibition at List",
+    image: jazzImg,
+    caption: "8 Dec: \"All That Jazz\" Ball at Sayles",
+    link: "https://events.brown.edu/event/276062-all-that-jazz-ball"
   },
   {
-    image: image3,
-    caption: "22 Dec: Pottery Workshop",
+    image: orchestraImg,
+    caption: "9 Dec: Orchestra Concert at Lindemann",
+    link: "https://events.brown.edu/event/272867-brown-university-orchestra-concert"
   },
 ];
 
@@ -43,8 +46,10 @@ const Slideshow = () => {
             display: index === currentSlide ? "block" : "none",
           }}
         >
+          <Link to={slide.link} target="_blank" rel="noopener noreferrer">
           <img src={slide.image} style={{ width: "100%" }} />
           <div className="text">{slide.caption}</div>
+          </Link>
         </div>
       ))}
     </div>

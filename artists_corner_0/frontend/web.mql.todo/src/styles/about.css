@@ -28,6 +28,28 @@
   margin: 1rem 0 0.5rem 1rem;
 }
 
+.forms-section {
+  margin-left: 8rem;
+  margin-top: 2rem;
+}
+
+.forms-section h2 {
+  margin-top: 3rem;
+  margin-left: 6rem;
+  font-size: 36px;
+}
+
+.forms-section p {
+  margin: 2rem 0 2rem 6.2rem;
+  font-size: 22px;
+}
+
+.forms-section a {
+  font-size: 21px;
+  color: #76ABDF;
+}
+
+
 .team-members {
   display: flex;
   flex-wrap: wrap;

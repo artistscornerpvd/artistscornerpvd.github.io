@@ -81,7 +81,7 @@ function App() {
 
       <div className="footer">
         <p style={{ fontSize: "0.9rem" }}>
-          Copyright © 2023 Artist's Corner PVD.&nbsp; Made with ❤️ in
+          Copyright © 2024 Artist's Corner PVD.&nbsp; Made with ❤️ in
           Providence.
         </p>
       </div>

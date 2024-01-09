@@ -25,7 +25,7 @@ function AboutPage() {
             a strong sense of community.
           </p>
           <p>
-            This website is currently being maintained by Pranavi👋. If you have
+            This website is currently maintained by Pranavi👋. If you have
             any questions or feedback, please email {" "} 
             <a href="mailto:artistscorverpvd@brown.edu">artistscorverpvd@brown.edu</a>!
           </p>

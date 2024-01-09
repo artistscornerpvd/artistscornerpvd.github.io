@@ -4,6 +4,10 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/shop/',
+  build: {
+    outDir: 'build',
+  },
   plugins: [
     [nodePolyfills({
       // To add only specific polyfills, add them here. If no option is passed, adds all polyfills
@@ -26,6 +30,7 @@ export default defineConfig({
       // Whether to polyfill `node:` protocol imports.
       protocolImports: true,
     }),
+    
     react()],
   ],
 })

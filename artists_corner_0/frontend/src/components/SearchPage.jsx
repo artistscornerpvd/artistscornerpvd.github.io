@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import {
   searchItems,
-  sortPriceLowToHighHelper,
-  sortPriceHighToLowHelper,
-  sortMostToLeastRecentHelper,
-  sortLeastToMostRecentHelper,
+  sortPriceLowToHigh,
+  sortPriceHighToLow,
+  sortMostToLeastRecent,
+  sortLeastToMostRecent,
 } from "../mongo/Mongo-Functions";
 import ItemComponent from "./ItemComponent";
 import "../styles/category.css";
@@ -20,9 +20,12 @@ const SearchPage = ({
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const [allSearchItems, setAllSearchItems] = useState([]);
-  const [unsortedItems, setUnsortedItems] = useState([]);
-  const [currentItems, setCurrentItems] = useState([]);
+  const [allSearchMasterItems, setAllSearchMasterItems] = useState([]);
+  const [allSearchSoldItems, setAllSearchSoldItems] = useState([]);
+  const [masterItemList, setMasterItemList] = useState([]);
+  const [soldItemList, setSoldItemList] = useState([]);
+  const [unsortedMasterItems, setUnsortedMasterItems] = useState([]);
+  const [unsortedSoldItems, setUnsortedSoldItems] = useState([]);
   const [selectedSort, setSelectedSort] = useState("reset");
 
   const location = useLocation();
@@ -35,9 +38,12 @@ const SearchPage = ({
       const [masterItems, soldItems] = await searchItems(keywordsParam);
       const combinedItems = [...masterItems, ...soldItems];
 
-      setAllSearchItems(combinedItems);
-      setUnsortedItems(combinedItems);
-      setCurrentItems(combinedItems);
+      setAllSearchMasterItems(masterItems);
+      setAllSearchSoldItems(soldItems);
+      setUnsortedMasterItems(masterItems);
+      setUnsortedSoldItems(soldItems);
+      setMasterItemList(masterItems);
+      setSoldItemList(soldItems);
 
       const categoriesSet = new Set(combinedItems.map((item) => item.category));
       setCategories(categoriesSet);
@@ -59,54 +65,70 @@ const SearchPage = ({
 
   const handleCategoryClick = async (category) => {
     setSelectedCategory(category);
+  
+    let categoryMasterItems, categorySoldItems;
+  
     if (category && category !== "reset") {
-      const categoryItems = allSearchItems.filter(
+      categoryMasterItems = allSearchMasterItems.filter(
         (item) => category === item.category
       );
-
-      setUnsortedItems(categoryItems);
-      setCurrentItems(categoryItems);
+      categorySoldItems = allSearchSoldItems.filter(
+        (item) => category === item.category
+      );
     } else {
-      setUnsortedItems(allSearchItems);
-      setCurrentItems(allSearchItems);
+      categoryMasterItems = allSearchMasterItems;
+      categorySoldItems = allSearchSoldItems;
     }
+  
+    const sortedItems = sortItemsByOption(
+      selectedSort,
+      categoryMasterItems,
+      categorySoldItems
+    );
+  
+    setUnsortedMasterItems(categoryMasterItems);
+    setUnsortedSoldItems(categorySoldItems);
+    setMasterItemList(sortedItems[0]);
+    setSoldItemList(sortedItems[1]);
   };
+  
 
   const handleSort = async (sort) => {
     setSelectedSort(sort); // Update selectedSort state
 
     if (sort !== "reset") {
-      sortItemsByOption(sort);
+      const sortedItems = sortItemsByOption(sort, masterItemList, soldItemList);
+      setMasterItemList(sortedItems[0]);
+      setSoldItemList(sortedItems[1]);
     } else {
-      setCurrentItems(unsortedItems);
+      setMasterItemList(unsortedMasterItems);
+      setSoldItemList(unsortedSoldItems);
     }
   };
 
-  const sortItemsByOption = (sort) => {
+  const sortItemsByOption = (sort, masterItems, soldItems) => {
     let combinedItems = [];
 
     switch (sort) {
       case "lowToHigh":
-        combinedItems = sortPriceLowToHighHelper(currentItems);
+        combinedItems = sortPriceLowToHigh([masterItems, soldItems]);
         break;
 
       case "highToLow":
-        combinedItems = sortPriceHighToLowHelper(currentItems);
+        combinedItems = sortPriceHighToLow([masterItems, soldItems]);
         break;
 
       case "mostRecent":
-        combinedItems = sortMostToLeastRecentHelper(currentItems);
+        combinedItems = sortMostToLeastRecent([masterItems, soldItems]);
         break;
 
       case "leastRecent":
-        combinedItems = sortLeastToMostRecentHelper(currentItems);
+        combinedItems = sortLeastToMostRecent([masterItems, soldItems]);
         break;
 
       default:
-        return unsortedItems;
+        return [unsortedMasterItems, unsortedSoldItems];
     }
-
-    setCurrentItems(combinedItems);
     return combinedItems;
   };
 
@@ -165,7 +187,7 @@ const SearchPage = ({
             )}
           </div>
           <div className="items-grid">
-            {currentItems.map((item) => (
+            {[...masterItemList, ...soldItemList].map((item) => (
               <ItemComponent key={item._id} item={item} />
             ))}
           </div>

@@ -13,7 +13,10 @@ import "../styles/category.css";
 
 const CategoryPage = () => {
   const { categoryName } = useParams();
-  const [currentItems, setCurrentItems] = useState([]);
+  const [masterItemList, setMasterItemList] = useState([]);
+  const [soldItemList, setSoldItemList] = useState([]);
+  const [unsortedMasterItems, setUnsortedMasterItems] = useState([]);
+  const [unsortedSoldItems, setUnsortedSoldItems] = useState([]);
   const [subcategories, setSubcategories] = useState(new Set());
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [selectedSort, setSelectedSort] = useState("reset");
@@ -22,8 +25,11 @@ const CategoryPage = () => {
   const fetchItems = async () => {
     try {
       const [masterItems, soldItems] = await getItemsByCategory(categoryName);
+      setUnsortedMasterItems(masterItems);
+      setUnsortedSoldItems(soldItems);
+      setMasterItemList(masterItems);
+      setSoldItemList(soldItems);
       const combinedItems = [...masterItems, ...soldItems];
-      setCurrentItems(combinedItems);
 
       const subcategoriesSet = new Set(
         combinedItems.map((item) => item.subcategory)
@@ -41,63 +47,69 @@ const CategoryPage = () => {
     fetchItems();
   }, [categoryName]);
 
-  useEffect(() => {
-    setCurrentItems(currentItems);
-  }, [selectedSort, currentItems]);
-
   const handleSubcategoryClick = async (subcategory) => {
     setSelectedSubcategory(subcategory);
+  
     if (subcategory) {
       const [masterItems, soldItems] = await getItemsByCategoryAndSubcategory(
         categoryName,
         subcategory
       );
-      setCurrentItems([...masterItems, ...soldItems]);
+  
+      // Apply sorting based on the selected sort option
+      const sortedItems = sortItemsByOption(selectedSort, masterItems, soldItems);
+  
+      setMasterItemList(sortedItems[0]);
+      setSoldItemList(sortedItems[1]);
     } else {
-      fetchItems(); // Reset to all items in the category
+      // Reset to all items in the category
+      fetchItems();
     }
   };
 
   const handleSort = async (selectedValue) => {
     setSelectedSort(selectedValue);
+  
     if (selectedValue !== "reset") {
-      sortItemsByOption(selectedValue);
+      // Apply sorting to the current items in state
+      const sortedItems = sortItemsByOption(selectedValue, masterItemList, soldItemList);
+  
+      setMasterItemList(sortedItems[0]);
+      setSoldItemList(sortedItems[1]);
     } else {
-      fetchItems();
+      // Reset to the unsorted items
+      setMasterItemList(unsortedMasterItems);
+      setSoldItemList(unsortedSoldItems);
     }
   };
 
-  const sortItemsByOption = async (sort) => {
-    const [masterItems, soldItems] = await getItemsByCategory(categoryName);
+  const sortItemsByOption = (sort, masterItems, soldItems) => {
     let combinedItems = [];
-
+  
     switch (sort) {
       case "lowToHigh":
         combinedItems = sortPriceLowToHigh([masterItems, soldItems]);
         break;
-
+  
       case "highToLow":
         combinedItems = sortPriceHighToLow([masterItems, soldItems]);
         break;
-
+  
       case "mostRecent":
         combinedItems = sortMostToLeastRecent([masterItems, soldItems]);
         break;
-
+  
       case "leastRecent":
         combinedItems = sortLeastToMostRecent([masterItems, soldItems]);
         break;
-
+  
       default:
-        return [...masterItems, ...soldItems];
+        return [masterItems, soldItems];
     }
-
-    const [filtMasterItems, filtSoldItems] = combinedItems;
-    const allFilteredItems = [...filtMasterItems, ...filtSoldItems];
-    setCurrentItems(allFilteredItems);
-
-    return allFilteredItems;
+  
+    return combinedItems;
   };
+  
 
   if (loading) {
     return (
@@ -156,7 +168,7 @@ const CategoryPage = () => {
           )}
         </div>
         <div className="items-grid">
-          {currentItems.map((item) => (
+          {[...masterItemList, ...soldItemList].map((item) => (
             <ItemComponent key={item._id} item={item} />
           ))}
         </div>

@@ -3,9 +3,9 @@ import { useParams, Link } from "react-router-dom";
 import { getItemById, getAccountByUsername } from "../mongo/Mongo-Functions";
 import { BSON } from "mongodb-stitch-browser-sdk";
 import "../styles/items.css";
-import instagramLogo from "../images/socials/Instagram_logo.png";
-import facebookLogo from "../images/socials/Facebook_logo.png";
-import twitterLogo from "../images/socials/Twitter_logo.png";
+import instagramLogo from "/general-images/socials/Instagram_logo.png";
+import facebookLogo from "/general-images/socials/Facebook_logo.png";
+import twitterLogo from "/general-images/socials/Twitter_logo.png";
 
 
 const ItemDetailPage = () => {

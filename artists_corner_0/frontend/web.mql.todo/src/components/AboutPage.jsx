@@ -1,8 +1,8 @@
 import "../styles/about.css";
-import pranaviImage from "../images/about-us/pranavi.jpg";
-import dorindaImage from "../images/about-us/dorinda.jpg";
-import jeffreyImage from "../images/about-us/jeffrey.jpg";
-import marissaImage from "../images/about-us/marissa.jpg";
+import pranaviImage from "/general-images/about-us/pranavi.jpg";
+import dorindaImage from "/general-images/about-us/dorinda.jpg";
+import jeffreyImage from "/general-images/about-us/jeffrey.jpg";
+import marissaImage from "/general-images/about-us/marissa.jpg";
 
 function AboutPage() {
   return (

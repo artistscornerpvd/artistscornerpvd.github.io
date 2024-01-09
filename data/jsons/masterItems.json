@@ -145,8 +145,8 @@
     "$date": "2024-02-01T15:05:00.000Z"
   },
   "photoFilenames": [
-    "../data/photos/crochet_ducks.jpg",
-    "../data/photos/blue_crochet_duck.jpg"
+    "../data/photos/crochet_ducks.JPG",
+    "../data/photos/blue_crochet_duck.JPG"
   ],
   "ifSold": false
 },
@@ -182,7 +182,7 @@
     "$date": "2024-02-06T21:50:00.000Z"
   },
   "photoFilenames": [
-    "../data/photos/green_crochet_coasters.png"
+    "../data/photos/green_crochet_coasters.PNG"
   ],
   "ifSold": false
 },
@@ -200,9 +200,9 @@
     "$date": "2023-12-26T19:20:00.000Z"
   },
   "photoFilenames": [
-    "../data/photos/crochet_octopus_set.jpg",
-    "../data/photos/crochet_pink_octopus.jpg",
-    "../data/photos/crochet_blue_octopus.jpg"
+    "../data/photos/crochet_octopus_set.JPG",
+    "../data/photos/crochet_pink_octopus.JPG",
+    "../data/photos/crochet_blue_octopus.JPG"
   ],
   "ifSold": false
 },
@@ -221,7 +221,7 @@
   },
   "photoFilenames": [
     "../data/photos/chunky_seashell_necklace_1.jpg",
-    "../data/photos/chunky_seashell_necklace_2.jpg"
+    "../data/photos/chunky_seashell_necklace_2.JPG"
   ],
   "ifSold": false
 },
@@ -258,7 +258,7 @@
     "$date": "2023-12-16T15:15:00.000Z"
   },
   "photoFilenames": [
-    "../data/photos/crochet_black_and_white_cat_keychain.jpg"
+    "../data/photos/crochet_black_and_white_cat_keychain.JPG"
   ],
   "ifSold": false
 },
@@ -367,7 +367,7 @@
     "$date": "2023-11-10T17:45:00.000Z"
   },
   "photoFilenames": [
-    "../data/photos/crochet_fruit_keychains.jpg"
+    "../data/photos/crochet_fruit_keychains.JPG"
   ],
   "ifSold": false
 },

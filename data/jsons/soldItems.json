@@ -12,7 +12,7 @@
     "$date": "2024-03-17T16:15:00.000Z"
   },
   "photoFilenames": [
-    "../data/photos/crochet_purple_snoopy_tote_bag.jpg"
+    "../data/photos/crochet_purple_snoopy_tote_bag.JPG"
   ],
   "ifSold": true
 },
@@ -49,8 +49,8 @@
   },
   "photoFilenames": [
     "../data/photos/mixed_beads_necklace_1.jpg",
-    "../data/photos/mixed_beads_necklace_2.jpg",
-    "../data/photos/mixed_beads_necklace_3.jpg"
+    "../data/photos/mixed_beads_necklace_2.JPG",
+    "../data/photos/mixed_beads_necklace_3.JPG"
   ],
   "ifSold": true
 },
@@ -124,7 +124,7 @@
   "photoFilenames": [
     "../data/photos/double_hanging_pearl_necklace_1.jpg",
     "../data/photos/double_hanging_pearl_necklace_2.jpg",
-    "../data/photos/double_hanging_pearl_necklace_3.jpg"
+    "../data/photos/double_hanging_pearl_necklace_3.JPG"
   ],
   "ifSold": true
 },
@@ -235,7 +235,7 @@
     "$date": "2024-06-26T14:15:00.000Z"
   },
   "photoFilenames": [
-    "../data/photos/crochet_bear_and_sunflower.jpg"
+    "../data/photos/crochet_bear_and_sunflower.JPG"
   ],
   "ifSold": true
 },

@@ -24,4 +24,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # API key
-src/private
+artists_corner_0/frontend/src/private

@@ -13,7 +13,7 @@
   },
   "photoFilenames": [
     "../data/photos/ceramic_bowl_1.jpg",
-    "../data/photos/ceramic_bowl_2.png",
+    "../data/photos/ceramic_bowl_2.jpg",
     "../data/photos/ceramic_bowl_3.jpg"
   ],
   "ifSold": false
@@ -53,7 +53,7 @@
   },
   "photoFilenames": [
     "../data/photos/moss_rug_1.jpg",
-    "../data/photos/moss_rug_2.png",
+    "../data/photos/moss_rug_2.jpg",
     "../data/photos/moss_rug_3.jpg"
   ],
   "ifSold": false
@@ -349,7 +349,7 @@
   },
   "photoFilenames": [
     "../data/photos/embroidery_hoop_1.jpg",
-    "../data/photos/embroidery_hoop_2.png"
+    "../data/photos/embroidery_hoop_2.jpg"
   ],
   "ifSold": false
 },

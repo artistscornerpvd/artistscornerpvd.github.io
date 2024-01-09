@@ -177,7 +177,7 @@ const SellerPage = () => {
 
       {soldItems.length > 0 && (
         <>
-          <h2>Sold Items</h2>
+          <h2>Past Listings</h2>
           <div className="items-grid" style={{marginLeft: "7rem", marginRight: "7rem"}}>
             {soldItems.map((item) => (
               <ItemComponent key={item._id} item={item} />

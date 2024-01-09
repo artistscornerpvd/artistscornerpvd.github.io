@@ -65,9 +65,9 @@ const SearchPage = ({
 
   const handleCategoryClick = async (category) => {
     setSelectedCategory(category);
-  
+
     let categoryMasterItems, categorySoldItems;
-  
+
     if (category && category !== "reset") {
       categoryMasterItems = allSearchMasterItems.filter(
         (item) => category === item.category
@@ -79,19 +79,33 @@ const SearchPage = ({
       categoryMasterItems = allSearchMasterItems;
       categorySoldItems = allSearchSoldItems;
     }
-  
+
+    // Set the selected sort to "reset" when a new category is clicked
+    setSelectedSort("reset");
+
     const sortedItems = sortItemsByOption(
       selectedSort,
       categoryMasterItems,
       categorySoldItems
     );
-  
+
     setUnsortedMasterItems(categoryMasterItems);
     setUnsortedSoldItems(categorySoldItems);
     setMasterItemList(sortedItems[0]);
     setSoldItemList(sortedItems[1]);
   };
-  
+
+  // Use useEffect to handle state updates after they are completed
+  useEffect(() => {
+    const sortedItems = sortItemsByOption(
+      selectedSort,
+      unsortedMasterItems,
+      unsortedSoldItems
+    );
+
+    setMasterItemList(sortedItems[0]);
+    setSoldItemList(sortedItems[1]);
+  }, [selectedSort, unsortedMasterItems, unsortedSoldItems]);
 
   const handleSort = async (sort) => {
     setSelectedSort(sort); // Update selectedSort state

@@ -1,12 +1,12 @@
 {
   "name": "term-project",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "homepage": "https://artistscornverpvd.github.io",
   "private": true,
   "type": "module",
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build -b master",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "dev": "vite",
     "build": "tsc && vite build",

@@ -49,16 +49,21 @@ const CategoryPage = () => {
 
   const handleSubcategoryClick = async (subcategory) => {
     setSelectedSubcategory(subcategory);
-  
+    setSelectedSort("reset"); // Reset the sorting when a new subcategory is clicked
+
     if (subcategory) {
       const [masterItems, soldItems] = await getItemsByCategoryAndSubcategory(
         categoryName,
         subcategory
       );
-  
+
       // Apply sorting based on the selected sort option
-      const sortedItems = sortItemsByOption(selectedSort, masterItems, soldItems);
-  
+      const sortedItems = sortItemsByOption(
+        selectedSort,
+        masterItems,
+        soldItems
+      );
+
       setMasterItemList(sortedItems[0]);
       setSoldItemList(sortedItems[1]);
     } else {
@@ -69,11 +74,15 @@ const CategoryPage = () => {
 
   const handleSort = async (selectedValue) => {
     setSelectedSort(selectedValue);
-  
+
     if (selectedValue !== "reset") {
       // Apply sorting to the current items in state
-      const sortedItems = sortItemsByOption(selectedValue, masterItemList, soldItemList);
-  
+      const sortedItems = sortItemsByOption(
+        selectedValue,
+        masterItemList,
+        soldItemList
+      );
+
       setMasterItemList(sortedItems[0]);
       setSoldItemList(sortedItems[1]);
     } else {
@@ -85,31 +94,30 @@ const CategoryPage = () => {
 
   const sortItemsByOption = (sort, masterItems, soldItems) => {
     let combinedItems = [];
-  
+
     switch (sort) {
       case "lowToHigh":
         combinedItems = sortPriceLowToHigh([masterItems, soldItems]);
         break;
-  
+
       case "highToLow":
         combinedItems = sortPriceHighToLow([masterItems, soldItems]);
         break;
-  
+
       case "mostRecent":
         combinedItems = sortMostToLeastRecent([masterItems, soldItems]);
         break;
-  
+
       case "leastRecent":
         combinedItems = sortLeastToMostRecent([masterItems, soldItems]);
         break;
-  
+
       default:
         return [masterItems, soldItems];
     }
-  
+
     return combinedItems;
   };
-  
 
   if (loading) {
     return (

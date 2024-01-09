@@ -99,7 +99,7 @@ const ItemDetailPage = () => {
             <div className="profile-container">
               <img
                 className="profile-photo"
-                src={"../../data/photos/" + seller.profilePhotoFilename}
+                src={"/data/photos/" + seller.profilePhotoFilename}
                 alt={seller.username}
               />
               <Link to={`/user/${seller.username}`}>{seller.username}</Link>

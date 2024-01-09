@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../styles/slideshow.css";
 import listImg from "../images/slideshow/list_painting.jpeg";
-import jazzImg from "../images/slideshow/jazz_art.jpeg";
+import jazzImg from "../images/slideshow/swing_dance.jpg";
 import orchestraImg from "../images/slideshow/orchestra.jpeg";
 
 const slidesData = [

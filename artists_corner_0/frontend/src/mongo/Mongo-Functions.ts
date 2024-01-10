@@ -298,32 +298,7 @@ export async function searchItems(keywords: string): Promise<ItemTuple> {
     const masterItemsCursor = masterItemsCollection.find(masterSearchQuery);
     const masterSearchResults: Item[] = await masterItemsCursor.toArray();
 
-    // Calculate scores for master items based on the number of matches
-    const masterResultsWithScores = masterSearchResults.map((item) => {
-      const score = keywordArray.reduce(
-        (acc, keyword) => {
-          const matchCount =
-            (item.title?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.description?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.category?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.subcategory?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.seller?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.price === dollarAmount ? 1 : 0);
-
-          return acc + matchCount;
-        },
-        0
-      );
-
-      return { item, score };
-    });
-
-    // Sort master results by score in descending order
-    const sortedMasterResults = masterResultsWithScores.sort(
-      (a, b) => b.score - a.score
-    );
-
-    // Repeat the process for sold_items
+    // Searches for items in sold_items
     const soldItemsCollection: RemoteMongoCollection<Item> =
       db.collection("sold_items");
     const soldSearchQuery = {
@@ -341,10 +316,11 @@ export async function searchItems(keywords: string): Promise<ItemTuple> {
     const soldItemsCursor = soldItemsCollection.find(soldSearchQuery);
     const soldSearchResults: Item[] = await soldItemsCursor.toArray();
 
-    // Calculate scores for sold items based on the number of matches
-    const soldResultsWithScores = soldSearchResults.map((item) => {
-      const score = keywordArray.reduce(
-        (acc, keyword) => {
+    // Only calculate scores and sort when there is more than one keyword
+    if (keywordArray.length > 1) {
+      // Calculate scores for master items based on the number of matches
+      const masterResultsWithScores = masterSearchResults.map((item) => {
+        const score = keywordArray.reduce((acc, keyword) => {
           const matchCount =
             (item.title?.match(new RegExp(keyword, "gi")) || []).length +
             (item.description?.match(new RegExp(keyword, "gi")) || []).length +
@@ -354,25 +330,51 @@ export async function searchItems(keywords: string): Promise<ItemTuple> {
             (item.price === dollarAmount ? 1 : 0);
 
           return acc + matchCount;
-        },
-        0
+        }, 0);
+
+        return { item, score };
+      });
+
+      // Sort master results by score in descending order
+      const sortedMasterResults = masterResultsWithScores.sort(
+        (a, b) => b.score - a.score
       );
 
-      return { item, score };
-    });
+      // Calculate scores for sold items based on the number of matches
+      const soldResultsWithScores = soldSearchResults.map((item) => {
+        const score = keywordArray.reduce((acc, keyword) => {
+          const matchCount =
+            (item.title?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.description?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.category?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.subcategory?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.seller?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.price === dollarAmount ? 1 : 0);
 
-    // Sort sold results by score in descending order
-    const sortedSoldResults = soldResultsWithScores.sort(
-      (a, b) => b.score - a.score
-    );
+          return acc + matchCount;
+        }, 0);
 
-    return [sortedMasterResults.map((result) => result.item), sortedSoldResults.map((result) => result.item)];
+        return { item, score };
+      });
+
+      // Sort sold results by score in descending order
+      const sortedSoldResults = soldResultsWithScores.sort(
+        (a, b) => b.score - a.score
+      );
+
+      return [
+        sortedMasterResults.map((result) => result.item),
+        sortedSoldResults.map((result) => result.item),
+      ];
+    }
+
+    // Return unsorted results when there is only one keyword
+    return [masterSearchResults, soldSearchResults];
   } catch (error) {
     console.error("Error fetching items:", error);
     return [[], []];
   }
 }
-
 
 /**
  * Retrieves items from database from its object id

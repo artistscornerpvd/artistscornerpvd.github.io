@@ -54,9 +54,13 @@ const SearchPage = ({
     }
   };
   useEffect(() => {
-    if (location.search && keywordsParam) {
+    // Reset filter and sort options when a new search is initiated
+    if (ifClicked && location.search && keywordsParam) {
       fetchItems();
+      setSelectedCategory(""); // Reset selected category
+      setSelectedSort("reset"); // Reset selected sort
     }
+
     if (ifClicked) {
       setSearchString("");
       setIfClicked(false);

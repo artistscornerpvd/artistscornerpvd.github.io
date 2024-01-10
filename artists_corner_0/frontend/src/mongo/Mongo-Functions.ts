@@ -254,9 +254,9 @@ export async function getItemsBySubcategory(
 }
 
 /**
- * Retrieves items from database from based on search string
- * @param keyword string (insensitive) of keyword(s) want to search for
- * @returns tuple of [masterItems, soldItems] of items in with that keyword
+ * Retrieves items from the database based on search string
+ * @param keywords string (insensitive) of keyword(s) to search for
+ * @returns tuple of [masterItems, soldItems] of items with that keyword, sorted by the number of matches
  */
 export async function searchItems(keywords: string): Promise<ItemTuple> {
   try {
@@ -272,49 +272,107 @@ export async function searchItems(keywords: string): Promise<ItemTuple> {
 
     // if words, store regex as case insensitive
     const keywordRegex = { $regex: keywords, $options: "i" };
-    // if dollar amount, remove $ and cents digits to return whole dollar amount
+    // if dollar amount, remove $ and cents digits to return the whole dollar amount
     const dollarAmount = parseInt(
       keywords.replace(/\$([\d]+)(\.\d{1,2})?/, "$1")
     );
+
+    // Split the keywords by spaces
+    const keywordArray = keywords.split(/\s+/);
 
     // Searches for items in master_items
     const masterItemsCollection: RemoteMongoCollection<Item> =
       db.collection("master_items");
     const masterSearchQuery = {
-      $or: [
-        { title: keywordRegex },
-        { description: keywordRegex },
-        { category: keywordRegex },
-        { subcategory: keywordRegex },
-        { seller: keywordRegex },
-        { price: { $gt: dollarAmount - 1, $lt: dollarAmount + 1 } }, //search for any items within $2 of input
-      ],
+      $or: keywordArray.map((keyword) => ({
+        $or: [
+          { title: { $regex: keyword, $options: "i" } },
+          { description: { $regex: keyword, $options: "i" } },
+          { category: { $regex: keyword, $options: "i" } },
+          { subcategory: { $regex: keyword, $options: "i" } },
+          { seller: { $regex: keyword, $options: "i" } },
+          { price: { $gt: dollarAmount - 1, $lt: dollarAmount + 1 } },
+        ],
+      })),
     };
     const masterItemsCursor = masterItemsCollection.find(masterSearchQuery);
     const masterSearchResults: Item[] = await masterItemsCursor.toArray();
 
-    // Searches for items in sold_items
+    // Calculate scores for master items based on the number of matches
+    const masterResultsWithScores = masterSearchResults.map((item) => {
+      const score = keywordArray.reduce(
+        (acc, keyword) => {
+          const matchCount =
+            (item.title?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.description?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.category?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.subcategory?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.seller?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.price === dollarAmount ? 1 : 0);
+
+          return acc + matchCount;
+        },
+        0
+      );
+
+      return { item, score };
+    });
+
+    // Sort master results by score in descending order
+    const sortedMasterResults = masterResultsWithScores.sort(
+      (a, b) => b.score - a.score
+    );
+
+    // Repeat the process for sold_items
     const soldItemsCollection: RemoteMongoCollection<Item> =
       db.collection("sold_items");
     const soldSearchQuery = {
-      $or: [
-        { title: keywordRegex },
-        { description: keywordRegex },
-        { category: keywordRegex },
-        { subcategory: keywordRegex },
-        { seller: keywordRegex },
-        { price: { $gt: dollarAmount - 1, $lt: dollarAmount + 1 } },
-      ],
+      $or: keywordArray.map((keyword) => ({
+        $or: [
+          { title: { $regex: keyword, $options: "i" } },
+          { description: { $regex: keyword, $options: "i" } },
+          { category: { $regex: keyword, $options: "i" } },
+          { subcategory: { $regex: keyword, $options: "i" } },
+          { seller: { $regex: keyword, $options: "i" } },
+          { price: { $gt: dollarAmount - 1, $lt: dollarAmount + 1 } },
+        ],
+      })),
     };
     const soldItemsCursor = soldItemsCollection.find(soldSearchQuery);
     const soldSearchResults: Item[] = await soldItemsCursor.toArray();
 
-    return [masterSearchResults, soldSearchResults];
+    // Calculate scores for sold items based on the number of matches
+    const soldResultsWithScores = soldSearchResults.map((item) => {
+      const score = keywordArray.reduce(
+        (acc, keyword) => {
+          const matchCount =
+            (item.title?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.description?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.category?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.subcategory?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.seller?.match(new RegExp(keyword, "gi")) || []).length +
+            (item.price === dollarAmount ? 1 : 0);
+
+          return acc + matchCount;
+        },
+        0
+      );
+
+      return { item, score };
+    });
+
+    // Sort sold results by score in descending order
+    const sortedSoldResults = soldResultsWithScores.sort(
+      (a, b) => b.score - a.score
+    );
+
+    return [sortedMasterResults.map((result) => result.item), sortedSoldResults.map((result) => result.item)];
   } catch (error) {
     console.error("Error fetching items:", error);
-    return [];
+    return [[], []];
   }
 }
+
 
 /**
  * Retrieves items from database from its object id

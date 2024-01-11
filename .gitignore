@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+/.vite
+/.idea
 
 # testing
 /coverage
@@ -24,4 +26,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # API key
-src/private
+artists_corner_0/frontend/web.mql.todo/src/private

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   searchItems,
   sortPriceLowToHigh,
@@ -56,20 +56,22 @@ const SearchPage = ({
   useEffect(() => {
     const fetchData = async () => {
       if (ifClicked && location.search && keywordsParam) {
-        setSelectedCategory(""); // Reset selected category
-        setSelectedSort("reset"); // Reset selected sort
-      }
-      if ((location.search && keywordsParam) || (ifClicked)) {
-        await fetchItems(); // Wait for fetchItems to complete
-      }
-      if (ifClicked) {
+        // Reset selected category and sort
+        await Promise.all([fetchItems(), setSelectedCategory(""), setSelectedSort("reset")]);
+      } else {
+        // Regular case without resets
+        await fetchItems();
+      } 
+       if (ifClicked) {
+        // Reset selected category and sort
         setSearchString("");
         setIfClicked(false);
-      }
-    };
+    }
+  };
   
     fetchData();
-  }, [location, keywordsParam, searchString, ifClicked]);
+  }, [location.search, keywordsParam, ifClicked]);
+  
   
 
   const handleCategoryClick = async (category) => {

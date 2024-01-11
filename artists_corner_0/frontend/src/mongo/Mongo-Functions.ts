@@ -254,6 +254,53 @@ export async function getItemsBySubcategory(
 }
 
 /**
+ * Helper function to calculate scores for each item depending on search query
+ * For each keyword: partial word matches get a score of 0.5 an full word matches
+ * get a score of 1, 0 if no match. Then, we a sum up the keyword scores
+ * for an item's total score.
+ *
+ * @param item want to calculate score for
+ * @param keywordArray keywords want to search for (split by spaces in query)
+ * @param dollarAmount dollar amount searched for
+ * @returns total score item
+ */
+function calculateScore(
+  item: Item,
+  keywordArray: string[],
+  dollarAmount: number
+): number {
+  const keywordMatches = (keywordRegex: RegExp): number => {
+    return (
+      (item.title?.match(keywordRegex) || []).length +
+      (item.description?.match(keywordRegex) || []).length +
+      (item.category?.match(keywordRegex) || []).length +
+      (item.subcategory?.match(keywordRegex) || []).length +
+      (item.seller?.match(keywordRegex) || []).length +
+      (item.price >= dollarAmount - 1 && item.price <= dollarAmount + 1 ? 1 : 0)
+    );
+  };
+
+  const totalScore = keywordArray.reduce((acc, keyword) => {
+    const keywordRegexBounded = new RegExp(`\\b${keyword}\\b`, "gi");
+    const keywordRegexUnbounded = new RegExp(keyword, "gi");
+
+    const boundedMatches = keywordMatches(keywordRegexBounded);
+    const unboundedMatches = keywordMatches(keywordRegexUnbounded);
+
+    let keywordScore = 0;
+
+    if (boundedMatches > 0) {
+      keywordScore = 1;
+    } else if (boundedMatches === 0 && unboundedMatches > 0) {
+      keywordScore = 0.5;
+    }
+    return acc + keywordScore;
+  }, 0);
+
+  return totalScore;
+}
+
+/**
  * Retrieves items from the database based on search string
  * @param keywords string (insensitive) of keyword(s) to search for
  * @returns tuple of [masterItems, soldItems] of items with that keyword, sorted by the number of matches
@@ -265,107 +312,61 @@ export async function searchItems(keywords: string): Promise<ItemTuple> {
       new UserApiKeyCredential(ACCESS_TOKEN)
     );
 
+    // Access the MongoDB database
     const db = mongodb?.db("artists_corner_pvd");
     if (!db) {
       throw new Error("Database not available");
     }
 
-    // if words, store regex as case insensitive
-    const keywordRegex = { $regex: keywords, $options: "i" };
-    // if dollar amount, remove $ and cents digits to return the whole dollar amount
+    // Extract dollar amount from keywords
     const dollarAmount = parseInt(
       keywords.replace(/\$([\d]+)(\.\d{1,2})?/, "$1")
     );
-
-    // Split the keywords by spaces
+    // Split keywords by spaces
     const keywordArray = keywords.split(/\s+/);
 
-    // Searches for items in master_items
+    // Helper function to create search query for a keyword
+    const createSearchQuery = (keyword: string) => ({
+      $or: [
+        { title: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+        { category: { $regex: keyword, $options: "i" } },
+        { subcategory: { $regex: keyword, $options: "i" } },
+        { seller: { $regex: keyword, $options: "i" } },
+        { price: { $gt: dollarAmount - 1, $lt: dollarAmount + 1 } },
+      ],
+    });
+    const searchQuery = {
+      $or: keywordArray.map(createSearchQuery),
+    };
+
+    // Searches for item with id in master_items
     const masterItemsCollection: RemoteMongoCollection<Item> =
       db.collection("master_items");
-    const masterSearchQuery = {
-      $or: keywordArray.map((keyword) => ({
-        $or: [
-          { title: { $regex: keyword, $options: "i" } },
-          { description: { $regex: keyword, $options: "i" } },
-          { category: { $regex: keyword, $options: "i" } },
-          { subcategory: { $regex: keyword, $options: "i" } },
-          { seller: { $regex: keyword, $options: "i" } },
-          { price: { $gt: dollarAmount - 1, $lt: dollarAmount + 1 } },
-        ],
-      })),
-    };
-    const masterItemsCursor = masterItemsCollection.find(masterSearchQuery);
-    const masterSearchResults: Item[] = await masterItemsCursor.toArray();
+    const masterSearchResults: Item[] = await masterItemsCollection
+      .find(searchQuery)
+      .toArray();
 
-    // Searches for items in sold_items
+    // Searches for item with id in sold_items
     const soldItemsCollection: RemoteMongoCollection<Item> =
       db.collection("sold_items");
-    const soldSearchQuery = {
-      $or: keywordArray.map((keyword) => ({
-        $or: [
-          { title: { $regex: keyword, $options: "i" } },
-          { description: { $regex: keyword, $options: "i" } },
-          { category: { $regex: keyword, $options: "i" } },
-          { subcategory: { $regex: keyword, $options: "i" } },
-          { seller: { $regex: keyword, $options: "i" } },
-          { price: { $gt: dollarAmount - 1, $lt: dollarAmount + 1 } },
-        ],
-      })),
-    };
-    const soldItemsCursor = soldItemsCollection.find(soldSearchQuery);
-    const soldSearchResults: Item[] = await soldItemsCursor.toArray();
+    const soldSearchResults: Item[] = await soldItemsCollection
+      .find(searchQuery)
+      .toArray();
 
-    // Only calculate scores and sort when there is more than one keyword
+    // Calculate scores and sort results if there is more than one keyword
     if (keywordArray.length > 1) {
-      // Calculate scores for master items based on the number of matches
-      const masterResultsWithScores = masterSearchResults.map((item) => {
-        const score = keywordArray.reduce((acc, keyword) => {
-          const matchCount =
-            (item.title?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.description?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.category?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.subcategory?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.seller?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.price === dollarAmount ? 1 : 0);
+      // Sort and return the results
+      const sortResults = (results: Item[]) =>
+        results
+          .map((item) => ({
+            item,
+            score: calculateScore(item, keywordArray, dollarAmount),
+          }))
+          .sort((a, b) => b.score - a.score)
+          .map((result) => result.item);
 
-          return acc + matchCount;
-        }, 0);
-
-        return { item, score };
-      });
-
-      // Sort master results by score in descending order
-      const sortedMasterResults = masterResultsWithScores.sort(
-        (a, b) => b.score - a.score
-      );
-
-      // Calculate scores for sold items based on the number of matches
-      const soldResultsWithScores = soldSearchResults.map((item) => {
-        const score = keywordArray.reduce((acc, keyword) => {
-          const matchCount =
-            (item.title?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.description?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.category?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.subcategory?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.seller?.match(new RegExp(keyword, "gi")) || []).length +
-            (item.price === dollarAmount ? 1 : 0);
-
-          return acc + matchCount;
-        }, 0);
-
-        return { item, score };
-      });
-
-      // Sort sold results by score in descending order
-      const sortedSoldResults = soldResultsWithScores.sort(
-        (a, b) => b.score - a.score
-      );
-
-      return [
-        sortedMasterResults.map((result) => result.item),
-        sortedSoldResults.map((result) => result.item),
-      ];
+      return [sortResults(masterSearchResults), sortResults(soldSearchResults)];
     }
 
     // Return unsorted results when there is only one keyword
@@ -381,7 +382,7 @@ export async function searchItems(keywords: string): Promise<ItemTuple> {
  * @param id object id -- if have string of id use new BSON.ObjectId([string]) and make sure
  * BSON is imported from mongodb-stitch-browser-sdk
  *
- * Obejct Id must be a 24 character hex string, 12 byte binary Buffer, or a number
+ * Object Id must be a 24 character hex string, 12 byte binary Buffer, or a number
  * or else it will error (for simplicity, we use a 24 character hex string).
  *
  * @returns Item with object id or undefined if error -- no or multiple items with id
@@ -457,7 +458,7 @@ export async function getItemListById(
  * @param items an item[] to sort
  * @returns items[] sorted with price low to high
  */
-export function sortPriceLowToHighHelper(items: Item[]): Item[] {
+function sortPriceLowToHighHelper(items: Item[]): Item[] {
   return items.slice().sort((a, b) => a.price - b.price);
 }
 
@@ -486,7 +487,7 @@ export function sortPriceLowToHigh(itemTuple: ItemTuple): ItemTuple {
  * @param items an item[] to sort
  * @returns items[] sorted with price high to low
  */
-export function sortPriceHighToLowHelper(items: Item[]): Item[] {
+function sortPriceHighToLowHelper(items: Item[]): Item[] {
   return items.slice().sort((a, b) => b.price - a.price);
 }
 
@@ -515,7 +516,7 @@ export function sortPriceHighToLow(itemTuple: ItemTuple): ItemTuple {
  * @param items an item[] to sort
  * @returns items[] sorted with timestamps from least recent to most recent
  */
-export function sortLeastToMostRecentHelper(items: Item[]): Item[] {
+function sortLeastToMostRecentHelper(items: Item[]): Item[] {
   return items.slice().sort((a, b) => {
     // Convert timestamps into dates and compare
     const aTime = new Date(a.timestamp).getTime();
@@ -550,7 +551,7 @@ export function sortLeastToMostRecent(itemTuple: ItemTuple): ItemTuple {
  * @param items an item[] to sort
  * @returns items[] sorted with timestamps from most recent to least recent
  */
-export function sortMostToLeastRecentHelper(items: Item[]): Item[] {
+function sortMostToLeastRecentHelper(items: Item[]): Item[] {
   return items.slice().sort((a, b) => {
     // Convert timestamps into dates and compare
     const aTime = new Date(a.timestamp).getTime();

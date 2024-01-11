@@ -54,18 +54,23 @@ const SearchPage = ({
     }
   };
   useEffect(() => {
-    // Reset filter and sort options when a new search is initiated
-    if (ifClicked && location.search && keywordsParam) {
-      fetchItems();
-      setSelectedCategory(""); // Reset selected category
-      setSelectedSort("reset"); // Reset selected sort
-    }
-
-    if (ifClicked) {
-      setSearchString("");
-      setIfClicked(false);
-    }
+    const fetchData = async () => {
+      if (ifClicked && location.search && keywordsParam) {
+        setSelectedCategory(""); // Reset selected category
+        setSelectedSort("reset"); // Reset selected sort
+      }
+      if ((location.search && keywordsParam) || (ifClicked)) {
+        await fetchItems(); // Wait for fetchItems to complete
+      }
+      if (ifClicked) {
+        setSearchString("");
+        setIfClicked(false);
+      }
+    };
+  
+    fetchData();
   }, [location, keywordsParam, searchString, ifClicked]);
+  
 
   const handleCategoryClick = async (category) => {
     setSelectedCategory(category);

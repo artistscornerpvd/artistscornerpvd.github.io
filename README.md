@@ -10,7 +10,7 @@ This consignment site is a place for Brown and RISD students to sell their handm
 
 ### Project Duration:
 
-This webstite started out as 3-week term project. After the duration of the class project, Pranavi continued to improve and add features to the website. She deployed the website over Winter Break and now maintains the website. This website took approximately 4 weeks to build and 50 hours. 
+This webstite started out as 3-week term project. After the duration of the class project, Pranavi continued to improve and add features to the website. She deployed the website over Winter Break and now maintains the website. This website took approximately 4 weeks to build and about 50 hours. 
 
 #### Link to Initial Term Project Repo: https://github.com/cs0320-f23/term-project-jtao12-dkyerema-mtam2-prlakshm
 

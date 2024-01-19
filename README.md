@@ -1,8 +1,6 @@
-# Artist's Corner PVD README
+# Artist's Corner PVD
 
 # Project Details
-
-### Project Name: Artist's Corner PVD
 
 ### Link to Deployed Website: https://artistscornerpvd.github.io/
 
@@ -14,8 +12,7 @@ This consignment site is a place for Brown and RISD students to sell their handm
 
 This webstite started out as 3-week term project. After the duration of the class project, Pranavi continued to improve and add features to the website. She deployed the website over Winter Break and now maintains the website. This website took approximately 4 weeks to build and 50 hours. 
 
-##### Link to Initial Term Project Repo: https://github.com/cs0320-f23/term-project-jtao12-dkyerema-mtam2-prlakshm
-<br>
+#### Link to Initial Term Project Repo: https://github.com/cs0320-f23/term-project-jtao12-dkyerema-mtam2-prlakshm
 
 
 ### Team Members:
@@ -90,7 +87,7 @@ We also wrote Integration Tests to check the navigation between pages. For examp
 
 ## How To
 
-On browser: Navigate to https://artistscornerpvd.github.io/. The homepage has a slideshow of upcoming events at Brown University. Scroll down to see Google forms for submitting a new item listing, marking an old listing as sold, and creating a new seller account. The category pages display the items within each category. Please wait a couple seconds for all the item images to load. Items are always shown as current listings at the top, then sold listings at the bottom. From here you can filter by price, recent listings, and sort by subcategories. You can click on an item to naivagte to the item listing page. You can then see more images of the item and click on the seller page. From the item and seller page, you can click the "back" buttom displayed on the top left corner of the main item/seller section to go back to the previous page. 
+On browser: Navigate to https://artistscornerpvd.github.io/. The homepage has a slideshow of upcoming events at Brown University. Scroll down to see Google forms for submitting a new item listing, marking an old listing as sold, and creating a new seller account. The seller fills out the form and Pranavi, who's currently in charge of the artistscornerpvd@brown.edu email that receives these form answers, would change the item/account data accordingly. The category pages display the items within each category. Please wait a couple seconds for all the item images to load. Items are always shown as current listings at the top, then sold listings at the bottom. From here you can filter by price, recent listings, and sort by subcategories. You can click on an item to naivagte to the item listing page. You can then see more images of the item and click on the seller page. From the item and seller page, you can click the "back" buttom displayed on the top left corner of the main item/seller section to go back to the previous page. 
 
 You can also search by keywords. The items show up in the order they are ranked, so the items that match the most keywords are first. All the current listings are first and the sold items are at the bottom. You can also sort and filter these search items. 
 
@@ -100,6 +97,21 @@ You can also view the about us page to read about us!
 
 On localhost: To run this website, the user should enter "npm run dev" in the VSCode terminal. This will open the website on http://localhost:5173/. From there, the user can immediately view the upcoming events on the home page. They can then navigate to the toolbar and peruse the accessories, clothing, art, and crafts available on the site. The user can also use the search bar to search for items that specifically match their input search term. In each of these sections, the user can sort and filter through the displayed items, as well as access the seller's business page to learn more details about the product and the seller's contact information.
 
-## Contributions
-We referred to ChatGPT consistently through this project, particularly when making the shift from HTML to JavaScript files since these languages did not align entirely. We also found help in MongoDB's YouTube video "Getting Started with MongoDB Atlas - A Modern Database!" when initially learning how to use this database as our backend server replacement.
+## Future Iterations
+
+Short-term progress: Ideally, all the item images and seller profile photos should be somehow stored in the MongoDB database. Right now they are saved and accessed within the file system. The easier solution is to use AWS S3. We can save the profile photos and item photos into respective AWS S3 buckets. Then, we can store the photo link (which is publicly accessible) to the MongoDB database collection instead of the photo filepath. 
+
+-------------------------------------------
+
+Long-term progress: Initially, we wanted to allow students to sign into our website. This feature was not possible to implement within the allocated time for our project. However, this can be added in future iterations. Students can sign in using the Brown University email and we would authenticate these credentials using Google OAuth. This would mean we create a profile page for every user. Each user would have the option of adding a listing to their current listings section and marking a current listing as sold. Users who have only bought items in the past and have not sold any would have none for their items section. 
+
+We also would need to allow users to edit their profile information through the website, and not just through google forms. Also, they would be able to edit item listings though their profile while logged in.    
+
+Another feature to add would be a "liked items" feature. This would mean adding a heart button users can click on the top right of an item component/item page to like an item. If a user is logged in, they can then view all their liked items. 
+
+You will notice MongoDB functions already added that access and modify the data for some of these features in the "artists_corner_0\frontend\src\mongo\Mongo-Functions.ts" file.
+
+
+## Outside Resources
+We referred to ChatGPT consistently through this project, particularly when making the shift from HTML to JavaScript files since these languages did not align entirely. We also found help in MongoDB's YouTube video "Getting Started with MongoDB Atlas - A Modern Database!" when initially learning how to use this database as our backend server replacement. We referred to Stack Overflow and Google commonly to help us debug and to teach us how to implement new features. 
 

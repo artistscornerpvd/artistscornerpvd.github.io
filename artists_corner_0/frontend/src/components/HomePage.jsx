@@ -10,7 +10,7 @@ function HomePage() {
       </div>
 
       <section className="forms-section" style={{paddingBottom:"2rem"}}>
-        <h2>Forms</h2>
+        <h2>Forms📝</h2>
         <div className="forms-list">
           <div className="form">
             <p>

@@ -9,7 +9,7 @@ import {
 } from "mongodb-stitch-browser-sdk";
 import Item from "../models/item";
 import Account from "../models/account";
-import { ACCESS_TOKEN } from "../private/api";
+import { ACCESS_TOKEN } from "../private/api.js";
 
 export type ItemTuple = [Item[], Item[]] | [];
 
